@@ -15,8 +15,14 @@ jobs:
       - name: yarn install
         run: yarn install
 
+      - name: build main
+        run: yarn build-main
+
+      - name: build rendere
+        run: yarn build-renderer
+
       # Runs a set of commands using the runners shell
-      - name: yarn disk
+      - name: yarn dist
         run: yarn dist
       - name: Create Release
         id: create_release
