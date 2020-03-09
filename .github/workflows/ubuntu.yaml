@@ -59,3 +59,9 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
+
+      - name: Upload Release Asset
+        uses: AButler/upload-release-assets@v2.0
+        with:
+          files: 'release/Chronos Setup'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
