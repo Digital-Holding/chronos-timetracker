@@ -38,10 +38,6 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: yarn dist
         run: yarn dist
-
-      # Runs a set of commands using the runners shell
-      - name: yarn dist
-        run: yarn dist
       - uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
