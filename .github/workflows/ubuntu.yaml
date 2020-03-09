@@ -7,7 +7,7 @@ name: Create Release (Windows)
 jobs:
   build:
     name: Create Release
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@master
@@ -37,6 +37,7 @@ jobs:
           DISABLE_MIXPANEL: 1
           SENTRY_DRY_RUN: true
           SENTRY_API_KEY: ${{ secrets.SENTRY_API_KEY }}
+          SENTRY_TOKEN: ${{ secrets.SENTRY_API_KEY }}
           SENTRY_LOG_LEVEL: info
         with:
           tag_name: ${{ github.ref }}
