@@ -72,6 +72,7 @@ const AuthForm: StatelessFunctionalComponent<Props> = ({
       alt="Chronos"
     />
     <Flex column alignCenter>
+      <p style={{color: "#fff"}}>uses assets provided by <b><a style={{color: "#fff"}} href="https://fontawesome.com/">Font Awesome</a></b><br/>development release by <b><a style={{color: "#fff"}} href="https://digitalholding.pl">Digital Holding</a></b></p>
       <S.LoginInfo>
         Log in to your account
       </S.LoginInfo>
