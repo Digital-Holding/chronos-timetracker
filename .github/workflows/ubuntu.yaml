@@ -1,6 +1,7 @@
 on:
   push:
-    branches: [ release ]
+    tags:
+    - '*'
 
 name: Create Release (Windows)
 
@@ -64,6 +65,7 @@ jobs:
         uses: meeDamian/github-release@1.0
         with:
           files: 'release/'
+          tag: ${{ github.ref }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           token: ${{ secrets.GITHUB_TOKEN }}
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
