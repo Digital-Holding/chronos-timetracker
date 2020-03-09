@@ -61,13 +61,11 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Upload Release Asset
-        uses: meeDamian/github-release@1.0
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v1-release
         with:
-          files: 'release/'
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: release/Chronos*
           tag: ${{ github.ref }}
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          overwrite: true
+          file_glob: true
