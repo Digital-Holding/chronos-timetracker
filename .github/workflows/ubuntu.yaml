@@ -61,7 +61,7 @@ jobs:
           prerelease: false
 
       - name: Upload Release Asset
-        uses: meeDamian/github-release@0.1
+        uses: meeDamian/github-release@1.0
         with:
           files: 'release/'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
