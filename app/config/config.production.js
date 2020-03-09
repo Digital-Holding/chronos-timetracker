@@ -6,8 +6,8 @@ const config = {
   githubLink: 'https://github.com/web-pal/chronos-timetracker',
 
   // idleTimeThreshold: 60 * 60 * 24, // seconds of inactivity considering user is idle
-  idleTimeThreshold: 300,
-  checkUpdates: true,
+  idleTimeThreshold: 600,
+  checkUpdates: false,
   infoLog: false,
   issueWindowDevTools: false,
   idleWindowDevTools: false,

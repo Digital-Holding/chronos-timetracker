@@ -10,6 +10,7 @@
  *
  * @flow
  */
+
 import {
   app,
   BrowserWindow,
@@ -24,7 +25,6 @@ import {
 
 import store from './store';
 import pjson from '../../package.json';
-
 app.setAppUserModelId(pjson.build.appId);
 
 if (

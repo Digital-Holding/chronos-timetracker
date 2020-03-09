@@ -42,6 +42,7 @@ import {
 import {
   cogIcon,
   refreshWhite,
+  failedReports
 } from 'utils/data/svg';
 import config from 'config';
 import ChevronDownIcon from '@atlaskit/icon/glyph/chevron-down';
@@ -118,6 +119,16 @@ const Header: StatelessFunctionalComponent<Props> = ({
     </S.Profile>
 
     <S.Icons>
+      <S.FailedReportsIcon
+        src={failedReports}
+        onClick={() => {
+          dispatch(uiActions.setUiState({
+            selectedIssueId: -1,
+            selectedWorklogId: null,
+          }));
+        }}
+        alt="Failed reports"
+      />
       <S.RefreshIcon
         src={refreshWhite}
         onClick={() => {

@@ -38,7 +38,7 @@ import IssueReport from './IssueReport';
 import TrackingBar from './TrackingBar';
 import IssueViewHeader from './IssueViewHeader';
 import IssueViewTabs from './IssueViewTabs';
-
+import FailuresView from '../FailuresView';
 
 type Props = {
   selectedIssueId: Id | null,
@@ -62,8 +62,8 @@ const IssueView: StatelessFunctionalComponent<Props> = ({
   issueForDebug,
   currentTab,
   timerRunning,
-  dispatch,
-}: Props): Node => (selectedIssueId
+  dispatch
+}: Props): Node => (selectedIssueId > 0
   ? (
     <ErrorBoundary
       debugData={{
@@ -107,7 +107,7 @@ const IssueView: StatelessFunctionalComponent<Props> = ({
       </S.IssueView>
     </ErrorBoundary>
   )
-  : <IssueViewPlaceholder />);
+  : ((selectedIssueId === null) ? <IssueViewPlaceholder /> : <FailuresView />));
 
 function mapStateToProps(state) {
   return {
@@ -115,7 +115,7 @@ function mapStateToProps(state) {
     issueForDebug: getSelectedIssue(state),
     currentTab: getUiState('issueViewTab')(state),
     trackingIssueId: getUiState('trackingIssueId')(state),
-    timerRunning: getTimerState('running')(state),
+    timerRunning: getTimerState('running')(state)
   };
 }
 

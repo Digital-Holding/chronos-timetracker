@@ -75,6 +75,15 @@ const SaveWorklogInetIssueModal: StatelessFunctionalComponent<Props> = ({
             >
               Try again
             </Button>
+            <Button
+              appearance="primary"
+              onClick={() => {
+                dispatch(worklogsActions.saveForLayer());
+                dispatch(uiActions.setModalState('worklogInetIssue', false));
+              }}
+            >
+              Save for later
+            </Button>
           </ButtonGroup>
         </Flex>
       </ModalFooter>

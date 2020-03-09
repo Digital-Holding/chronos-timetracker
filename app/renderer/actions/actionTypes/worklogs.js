@@ -1,6 +1,9 @@
 // @flow
 
 export const SAVE_WORKLOG_REQUEST = 'worklogs/SAVE_WORKLOG_REQUEST';
+export const SAVE_FOR_LATER = 'worklogs/SAVE_FOR_LATER';
 export const TRY_SAVE_WORKLOG_AGAIN_REQUEST = 'worklogs/TRY_SAVE_WORKLOG_AGAIN_REQUEST';
 export const STOP_TRY_SAVE_WORKLOG_REQUEST = 'worklogs/STOP_TRY_SAVE_WORKLOG_REQUEST';
 export const DELETE_WORKLOG_REQUEST = 'worklogs/DELETE_WORKLOG_REQUEST';
+export const DELETE_OLD_WORKLOG = 'worklogs/DELETE_OLD_WORKLOG';
+

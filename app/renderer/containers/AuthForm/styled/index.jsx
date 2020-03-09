@@ -14,8 +14,7 @@ export const Container = styled.div`
   width: 100%;
   min-width: 500px;
   padding: 3vh 0;
-
-  background-image: linear-gradient(to top, #2965bf 0%, #0052CC 99%, #0052CC 100%);
+  background: #6c51a4;
 `;
 
 export const SpinnerContainer = styled.div`

@@ -349,6 +349,7 @@ export const getIssuesSourceSelectedOption = createSelector(
     if (!id) {
       return null;
     }
+    return null;
     switch (type) {
       case 'project': {
         const project = projectsMap[id];

@@ -14,6 +14,10 @@ export type WorklogsAction =
   {|
     type: typeof actionTypes.DELETE_WORKLOG_REQUEST,
     worklogId: Id,
+  |} |
+  {|
+    type: typeof actionTypes.DELETE_OLD_WORKLOG,
+    payload: any,
   |};
 
 export type Worklog = {|

@@ -1,7 +1,9 @@
 /**
  * Webpack config for production electron main process
  */
+const dotenv = require("dotenv")
 
+dotenv.config()
 import path from 'path';
 import webpack from 'webpack';
 import {

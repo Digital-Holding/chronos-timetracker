@@ -14,6 +14,13 @@ export const saveWorklogRequest = (
   payload,
 });
 
+export const deleteOldWorklog = (
+  payload: any,
+): WorklogsAction => ({
+  type: actionTypes.DELETE_OLD_WORKLOG,
+  payload,
+});
+
 export const deleteWorklogRequest = (
   worklogId: Id,
 ): WorklogsAction => ({
@@ -27,4 +34,8 @@ export const trySaveWorklogAgainRequest = (): WorklogsAction => ({
 
 export const stopTrySaveWorklogRequest = (): WorklogsAction => ({
   type: actionTypes.STOP_TRY_SAVE_WORKLOG_REQUEST,
+});
+
+export const saveForLayer = (): WorklogsAction => ({
+  type: actionTypes.SAVE_FOR_LATER,
 });

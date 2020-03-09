@@ -18,6 +18,7 @@ import {
 } from '../Modals';
 import Header from '../Header';
 import Sidebar from '../Sidebar';
+import FailuresView from '../FailuresView';
 import IssueView from '../IssueView';
 import * as S from './styled';
 
@@ -36,7 +37,6 @@ const Main: StatelessFunctionalComponent<Props> = (): Node => (
         <Sidebar />
       </S.Left>
       <IssueView />
-
       <AlertModal />
       <SaveWorklogInetIssueModal />
       <SettingsModal />

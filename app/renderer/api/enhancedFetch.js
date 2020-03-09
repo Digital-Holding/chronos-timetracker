@@ -53,7 +53,8 @@ export default function enhancedFetch(
   input,
   init,
 ) {
-  return fetch(
+  return Promise.race([
+   fetch(
     input,
     {
       ...init,
@@ -112,5 +113,7 @@ export default function enhancedFetch(
         response,
         json,
       });
-    });
+    }),
+    new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 4000))
+  ]);
 }

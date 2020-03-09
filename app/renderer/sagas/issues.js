@@ -1,6 +1,7 @@
 // @flow
 import * as eff from 'redux-saga/effects';
 import * as Sentry from '@sentry/electron';
+import fs from 'fs';
 import createActionCreators from 'redux-resource-action-creators';
 
 import {
@@ -112,12 +113,15 @@ function mapSearchValue(
   projectKeys: Array<string>,
 ): string {
   if (projectKeys.some(key => searchValue.startsWith(`${key}-`))) {
-    return `key = "${searchValue}"`;
+    return `issueKey = "${searchValue}"`;
+  }
+  if (/^[A-Z]+?[-][0-9]*$/.test(searchValue)) {
+    return `issueKey = "${searchValue}" OR summary ~ "${searchValue.replace(/\s+$/, '')}*"`;
   }
   if (/^[0-9]*$/.test(searchValue)) {
     return (
       `(${projectKeys.map(key => (
-        `key="${key}-${searchValue}"`
+        `issueKey="${key}-${searchValue}"`
       )).join(' OR ')}  OR summary ~ "${searchValue.replace(/\s+$/, '')}*")`
     );
   }
@@ -524,12 +528,46 @@ export function* getIssuePermissions(issueId: string | number): Generator<*, voi
   }
 }
 
-export function* issueSelectFlow(issueId: string | number): Generator<*, *, *> {
-  const issue = yield eff.select(selectors.getResourceItemById('issues', issueId));
-  yield eff.put(trayActions.traySelectIssue(issue.key));
-  yield eff.fork(getIssueTransitions, issueId);
-  yield eff.fork(getIssueComments, issueId);
-  yield eff.fork(getIssuePermissions, issueId);
+export function* reloadFailures(issueId: string | number | null): Generator<*, *, *> {
+
+  var elems = [];
+console.log('reload');
+  const forLater = 'forlater/';
+  var files = fs.readdirSync(forLater);
+  files.forEach( file => {
+    var fileContents = fs.readFileSync(forLater + file);
+    var entryRow = JSON.parse(fileContents);
+    var startDate = new Date(entryRow.startTime);
+    entryRow.startReadable = startDate.toLocaleString();
+
+    var endDate = new Date(startDate.getTime());
+    endDate.setSeconds(endDate.getSeconds() + entryRow.timeSpentInSeconds);
+
+    entryRow.endReadable = endDate.toLocaleString();
+    entryRow.filename = file;
+    if (entryRow.comment.length === 0) {
+      entryRow.comment = "(no comment)";
+    }
+    elems.push (entryRow);
+  });
+
+  yield eff.put(uiActions.setUiState({
+    failedWorklogs: elems
+  }));
+}
+
+
+export function* issueSelectFlow(issueId: string | number | null): Generator<*, *, *> {
+  if (issueId !== null && issueId >= 0) {
+    const issue = yield eff.select(selectors.getResourceItemById('issues', issueId));
+    yield eff.put(trayActions.traySelectIssue(issue.key));
+    yield eff.fork(getIssueTransitions, issueId);
+    yield eff.fork(getIssueComments, issueId);
+    yield eff.fork(getIssuePermissions, issueId);
+  } else {
+    //loading of failed entries
+    yield reloadFailures();
+  }
 }
 
 export function* refetchIssues(debouncing: boolean): Generator<*, void, *> {

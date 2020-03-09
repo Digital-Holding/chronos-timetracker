@@ -2,6 +2,7 @@
 import * as eff from 'redux-saga/effects';
 import moment from 'moment';
 import rimraf from 'rimraf';
+import fs from 'fs';
 import createActionCreators from 'redux-resource-action-creators';
 import {
   remote,
@@ -100,6 +101,31 @@ export function* getAdditionalWorklogsForIssues(
   }
 }
 
+export function deleteOldWorklog(filename) {
+  if (confirm('Are you sure?')) {
+    fs.unlinkSync('forlater/' + filename);
+    console.log('removed ' + filename);
+    return true;
+  }
+  return false;
+}
+
+export function* saveWorklogFromFile(filename)
+{
+  const forLater = 'forlater/';
+  var fileContents = fs.readFileSync(forLater + filename);
+  var payloadData = JSON.parse(fileContents);
+
+  return yield eff.call(
+    saveWorklog,
+    {
+      payload: payloadData,
+    },
+  );
+
+  return true;
+}
+
 function* saveWorklog({
   payload: {
     issueId,
@@ -112,6 +138,7 @@ function* saveWorklog({
     timeSpent,
     timeSpentInSeconds,
     isAuto = true,
+    filename = null
   },
 }: {
   payload: any,
@@ -314,6 +341,8 @@ function* saveWorklog({
 
     const issuesMap = yield eff.select(getResourceMap('issues'));
     const issue = issuesMap[issueId];
+
+    console.log(issue);
     const savedIssue = yield eff.call(
       jiraApi.getIssueByIdOrKey,
       {
@@ -373,6 +402,10 @@ function* saveWorklog({
     yield eff.put(uiActions.setUiState({
       saveWorklogInProcess: false,
     }));
+
+    if (filename !== null) {
+      fs.unlinkSync("forlater/" + filename);
+    }
     const quit = yield eff.select(getUiState('quitAfterSaveWorklog'));
     if (quit) {
       if (process.env.NODE_ENV === 'development') {
@@ -386,38 +419,60 @@ function* saveWorklog({
     yield eff.put(uiActions.setUiState({
       saveWorklogInProcess: false,
     }));
-    if (err.isInternetConnectionIssue) {
-      yield eff.put(uiActions.setModalState('worklogInetIssue', true));
-      const { tryAgain } = yield eff.race({
-        tryAgain: eff.take(actionTypes.TRY_SAVE_WORKLOG_AGAIN_REQUEST),
-        skip: eff.take(actionTypes.STOP_TRY_SAVE_WORKLOG_REQUEST),
-      });
-      if (tryAgain) {
-        return yield eff.call(
-          saveWorklog,
-          {
-            payload: {
-              issueId,
-              worklogId,
-              comment,
-              startTime,
-              adjustEstimate,
-              newEstimate,
-              reduceBy,
-              timeSpent,
-              timeSpentInSeconds,
-              isAuto,
-            },
-          },
-        );
+    yield eff.put(uiActions.setModalState('worklogInetIssue', true));
+    const { tryAgain, saveForLater } = yield eff.race({
+      tryAgain: eff.take(actionTypes.TRY_SAVE_WORKLOG_AGAIN_REQUEST),
+      saveForLater: eff.take(actionTypes.SAVE_FOR_LATER),
+      skip: eff.take(actionTypes.STOP_TRY_SAVE_WORKLOG_REQUEST),
+    });
+
+    const issuesMap = yield eff.select(getResourceMap('issues'));
+    const issue = issuesMap[issueId];
+
+    const issueKey = issue.key;
+    const issueSummary = issue.summary;
+
+    var payloadData = {
+      issueId,
+      worklogId,
+      comment,
+      startTime,
+      adjustEstimate,
+      newEstimate,
+      reduceBy,
+      timeSpent,
+      timeSpentInSeconds,
+      isAuto,
+      filename,
+      issueKey
+    };
+
+    if (tryAgain) {
+      if (filename !== null) {
+        fs.unlinkSync("forlater/" + filename);
       }
-      yield eff.cps(
-        rimraf,
-        `${app.getPath('userData')}/screens/`,
+      return yield eff.call(
+        saveWorklog,
+        {
+          payload: payloadData,
+        },
       );
-      return null;
+    } else if(saveForLater) {
+      const forLaterDir = 'forlater/';
+      var asDate = new Date(startTime);
+      var fname = issueId + "-" + asDate.getTime();
+      try {
+        if (!fs.existsSync(forLaterDir)) {
+          fs.mkdirSync(forLaterDir);
+        }
+        fs.writeFileSync(forLaterDir + fname, JSON.stringify(payloadData), 'utf-8');
+      }
+      catch(e) { alert('Failed to save the file !'); }
     }
-    throwError(err);
+    yield eff.cps(
+      rimraf,
+      `${app.getPath('userData')}/screens/`,
+    );
     return null;
   }
 }

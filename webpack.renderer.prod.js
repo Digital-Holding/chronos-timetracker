@@ -1,7 +1,9 @@
 /**
  * Build config for electron renderer process
  */
+const dotenv = require("dotenv")
 
+dotenv.config()
 import path from 'path';
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
