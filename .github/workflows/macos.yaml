@@ -55,7 +55,7 @@ jobs:
           SENTRY_LOG_LEVEL: info
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          release_name: Release MacOs ${{ github.ref }}
           draft: false
           prerelease: false
 

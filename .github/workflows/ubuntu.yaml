@@ -57,7 +57,7 @@ jobs:
           SENTRY_LOG_LEVEL: info
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          release_name: Release Ubuntu ${{ github.ref }}
           draft: false
           prerelease: false
 
