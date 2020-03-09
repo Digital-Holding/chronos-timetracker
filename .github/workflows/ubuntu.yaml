@@ -40,32 +40,9 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: yarn dist
         run: yarn dist
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-          ENV: production
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-          DEBUG_PROD: false
-          DISABLE_MIXPANEL: 1
-          SENTRY_DRY_RUN: true
-          SENTRY_API_KEY: ${{ secrets.SENTRY_API_KEY }}
-          SENTRY_TOKEN: ${{ secrets.SENTRY_API_KEY }}
-          SENTRY_LOG_LEVEL: info
+      - uses: ncipollo/release-action@v1
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release Ubuntu ${{ github.ref }}
-          draft: false
-          prerelease: false
-
-      - name: Upload binaries to release
-        uses: svenstaro/upload-release-action@v1-release
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: release/Chronos*
+          allowUpdates: true
+          artifacts: "release/Chronos*"
+          token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ github.ref }}
-          overwrite: true
-          file_glob: true
