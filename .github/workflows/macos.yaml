@@ -3,18 +3,16 @@ on:
     tags:
     - '*'
 
-name: Create Release (Ubuntu)
+name: Create Release (MacOS)
 
 jobs:
   build:
     name: Create Release
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@master
       # Runs a single command using the runners shell
-      - name: dependencies
-        run: sudo apt-get install -y libssl-dev libxcursor-dev libxcomposite-dev libxdamage-dev libxrandr-dev libfontconfig1-dev libxss-dev
 
       - name: yarn install
         run: yarn install
