@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@master
       # Runs a single command using the runners shell
       - name: dependencies
-        uses: apt-get install -y libssl-dev libxcursor-dev libxcomposite-dev libxdamage-dev libxrandr-dev libfontconfig1-dev libxss-dev
+        run: apt-get install -y libssl-dev libxcursor-dev libxcomposite-dev libxdamage-dev libxrandr-dev libfontconfig1-dev libxss-dev
 
       - name: yarn install
         run: yarn install
