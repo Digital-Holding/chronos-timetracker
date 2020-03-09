@@ -23,6 +23,16 @@ jobs:
         uses: actions/create-release@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          ENV: production
+          DEBUG_PROD: false
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          DEBUG_PROD: false
+          DISABLE_MIXPANEL: 1
+          SENTRY_DRY_RUN: true
+          SENTRY_API_KEY: ${{ secrets.SENTRY_API_KEY }}
+          SENTRY_LOG_LEVEL: info
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
