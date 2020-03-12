@@ -2,6 +2,8 @@
 import * as eff from 'redux-saga/effects';
 import moment from 'moment';
 import rimraf from 'rimraf';
+const StoreObj = require('electron-store');
+const storage = new StoreObj();
 import fs from 'fs';
 import createActionCreators from 'redux-resource-action-creators';
 import {
@@ -103,7 +105,7 @@ export function* getAdditionalWorklogsForIssues(
 
 export function deleteOldWorklog(filename) {
   if (confirm('Are you sure?')) {
-    fs.unlinkSync('forlater/' + filename);
+    storage.delete(filename);
     console.log('removed ' + filename);
     return true;
   }
@@ -448,8 +450,8 @@ function* saveWorklog({
     };
 
     if (tryAgain) {
-      if (filename !== null) {
-        fs.unlinkSync("forlater/" + filename);
+      if (filename !== null && storage.has(filename)) {
+        storage.get(filename);
       }
       return yield eff.call(
         saveWorklog,
@@ -458,16 +460,11 @@ function* saveWorklog({
         },
       );
     } else if(saveForLater) {
-      const forLaterDir = 'forlater/';
-      var asDate = new Date(startTime);
-      var fname = issueId + "-" + asDate.getTime();
-      try {
-        if (!fs.existsSync(forLaterDir)) {
-          fs.mkdirSync(forLaterDir);
-        }
-        fs.writeFileSync(forLaterDir + fname, JSON.stringify(payloadData), 'utf-8');
-      }
-      catch(e) { alert('Failed to save the file !'); }
+      let asDate = new Date(startTime);
+      let fname = issueId + "-" + asDate.getTime();
+      storage.set(fname, payloadData);
+      console.log(fname);
+      console.log(storage.get(fname));
     }
     yield eff.cps(
       rimraf,

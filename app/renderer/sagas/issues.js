@@ -3,7 +3,8 @@ import * as eff from 'redux-saga/effects';
 import * as Sentry from '@sentry/electron';
 import fs from 'fs';
 import createActionCreators from 'redux-resource-action-creators';
-
+const StoreObj = require('electron-store');
+const storage = new StoreObj();
 import {
   jiraApi,
 } from 'api';
@@ -530,29 +531,29 @@ export function* getIssuePermissions(issueId: string | number): Generator<*, voi
 
 export function* reloadFailures(issueId: string | number | null): Generator<*, *, *> {
 
-  var elems = [];
-console.log('reload');
-  const forLater = 'forlater/';
-  var files = fs.readdirSync(forLater);
-  files.forEach( file => {
-    var fileContents = fs.readFileSync(forLater + file);
-    var entryRow = JSON.parse(fileContents);
-    var startDate = new Date(entryRow.startTime);
-    entryRow.startReadable = startDate.toLocaleString();
+  var elements = new Array();
+
+  for (let element of storage) {
+    element[1]['filename'] = element[0];
+
+    var startDate = new Date(element[1].startTime);
+    element[1]['startReadable'] = startDate.toLocaleString();
 
     var endDate = new Date(startDate.getTime());
-    endDate.setSeconds(endDate.getSeconds() + entryRow.timeSpentInSeconds);
+    endDate.setSeconds(endDate.getSeconds() + element[1].timeSpentInSeconds);
 
-    entryRow.endReadable = endDate.toLocaleString();
-    entryRow.filename = file;
-    if (entryRow.comment.length === 0) {
-      entryRow.comment = "(no comment)";
+    element[1]['endReadable'] = endDate.toLocaleString();
+    if (element[1].comment.length === 0) {
+      element[1].comment = "(no comment)";
     }
-    elems.push (entryRow);
-  });
+
+    elements.push( element[1] );
+  }
+
+  console.log(elements);
 
   yield eff.put(uiActions.setUiState({
-    failedWorklogs: elems
+    failedWorklogs: elements
   }));
 }
 

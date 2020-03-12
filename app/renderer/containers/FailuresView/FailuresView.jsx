@@ -85,12 +85,12 @@ const FailuresView: StatelessFunctionalComponent<Props> = ({
             </td>
             <td>
             <S.ActionIcon
-              key={`delete_${row.issueId}`}
+              key={`delete_${row.filename}`}
               src={deleteIcon}
               onClick={() => {
                 if (deleteOldWorklog(row.filename)) {
                   dispatch(uiActions.setUiState({
-                    selectedIssueId: null,
+                    selectedIssueId: -1,
                     selectedWorklogId: null,
                   }));
                 }
@@ -98,7 +98,7 @@ const FailuresView: StatelessFunctionalComponent<Props> = ({
               alt="Delete"
             />
             <S.ActionIcon
-              key={`save_${row.issueId}`}
+              key={`save_${row.filename}`}
               src={saveIcon}
               onClick={() => {
                 dispatch(worklogsActions.saveWorklogRequest(row));
@@ -115,13 +115,13 @@ const FailuresView: StatelessFunctionalComponent<Props> = ({
 
 function mapStateToProps(state) {
 
-  console.log ({
-    failedWorklogs: (getUiState('failedWorklogs')(state) === undefined ? [] : getUiState('failedWorklogs')(state)),
-  });
 
-  return {
+  let data = {
     failedWorklogs: (getUiState('failedWorklogs')(state) === undefined ? [] : getUiState('failedWorklogs')(state)),
   };
+
+  console.log (data);
+  return data;
 }
 
 const connector: Connector<{}, Props> = connect(
